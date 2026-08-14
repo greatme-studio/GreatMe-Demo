@@ -1,0 +1,393 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>遠景國際｜全方位 3C 資產回收專業評估</title>
+    
+    <!-- 核心外部資源 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#13B5BE',
+                        secondary: '#71C073',
+                        brandDark: '#0F172A',
+                        lineGreen: '#06C755',
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans TC', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #F8FAFC;
+            color: #1E293B;
+            overflow-x: hidden;
+        }
+        .gradient-text-primary {
+            background: linear-gradient(135deg, #13B5BE 0%, #71C073 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-pattern {
+            background-image: radial-gradient(#13B5BE 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+            opacity: 0.1;
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #13B5BE 0%, #0E8E96 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-gradient:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px -5px rgba(19, 181, 190, 0.4);
+        }
+        .card-hover:hover {
+            border-color: #13B5BE;
+            box-shadow: 0 20px 40px -15px rgba(19, 181, 190, 0.15);
+        }
+        .tab-active {
+            color: white;
+            background: #13B5BE;
+            box-shadow: 0 4px 12px rgba(19, 181, 190, 0.2);
+        }
+        .clean-footer {
+            background-color: #0F172A !important;
+            position: relative;
+            z-index: 10;
+            overflow: hidden;
+            border: none;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0"
+  }
+}
+</script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        
+        const Icon = ({ name, className }) => {
+            const iconRef = useRef(null);
+            useEffect(() => {
+                if (window.lucide && iconRef.current) {
+                    iconRef.current.innerHTML = '';
+                    const i = document.createElement('i');
+                    const lucideName = name.toLowerCase().replace(/([a-z0-9])([A-Z])/g, '$1-$2');
+                    i.setAttribute('data-lucide', lucideName);
+                    if (className) i.className = className;
+                    iconRef.current.appendChild(i);
+                    window.lucide.createIcons();
+                }
+            }, [name, className]);
+            return <span ref={iconRef} className="inline-flex items-center justify-center"></span>;
+        };
+
+        const App = () => {
+            const [submitted, setSubmitted] = useState(false);
+            const [loading, setLoading] = useState(false);
+            const [scrolled, setScrolled] = useState(false);
+            const [userType, setUserType] = useState('enterprise');
+
+            const GAS_URL = "https://script.google.com/macros/s/AKfycbxe7Qjy8JUEVR9na6NyKUyid7hwxMZ2LMgUT3WBqHY-TnUGPMt-svzdu4aaQwX7kfGXWQ/exec";
+
+            useEffect(() => {
+                const handleScroll = () => setScrolled(window.scrollY > 20);
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setLoading(true);
+                const form = e.currentTarget;
+                const formData = new FormData(form);
+                const searchParams = new URLSearchParams();
+                formData.forEach((value, key) => searchParams.append(key, value.toString()));
+                searchParams.append('userType', userType);
+
+                try {
+                    await fetch(GAS_URL, { 
+                        method: "POST", 
+                        mode: "no-cors", 
+                        body: searchParams 
+                    });
+                    setSubmitted(true);
+                    window.scrollTo({ top: document.getElementById('form')?.offsetTop || 0, behavior: 'smooth' });
+                } catch (error) {
+                    alert("提交失敗，請檢查網路連接。");
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const certs = [
+                { id: "cert_iso_id", n: "ISO 27001:2023", s: "符合ISO 27001:2023 資安規範", d: "國際最高標準資安流程" },
+                { id: "cert_dod_id", n: "DoD 5220.22-M", s: "美國國防部抹除標準", d: "軍規級數據清除技術" },
+                { id: "cert_env_id", n: "環境部廢棄物處理證書", s: "專業人員證照", d: "政府核發環保回收資質" },
+                { id: "cert_audit_id", n: "資安系統稽核員證照", s: "系統技術認證", d: "雙重稽核保障客戶權益" }
+            ];
+
+            return (
+                <div className="min-h-screen">
+                    {/* Navbar */}
+                    <nav className={`fixed top-0 w-full z-50 transition-all duration-500 border-b ${
+                        scrolled ? 'bg-white/95 backdrop-blur-md py-3 md:py-4 shadow-sm border-slate-200' : 'bg-transparent border-transparent py-6 md:py-8'
+                    }`}>
+                        <div className="max-w-7xl mx-auto px-4 md:px-6 flex items-center justify-between">
+                            <div className="flex items-center gap-3 md:gap-4 group cursor-pointer" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
+                                <img src="Logo.png" alt="遠景國際" className="h-8 md:h-10 w-auto object-contain" />
+                                <div className="flex flex-col border-l border-slate-300 pl-3 md:pl-4">
+                                    <span className="text-xl md:text-2xl font-black tracking-tight text-slate-900 leading-none">遠景國際</span>
+                                    <span className="text-[9px] md:text-[10px] text-primary font-bold tracking-[0.2em] uppercase mt-1">Vision International</span>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2 md:gap-6">
+                                <a href="https://line.me/ti/p/@qz168" target="_blank" className="bg-lineGreen hover:bg-[#05b34c] text-white px-3 md:px-6 py-2 rounded-lg md:rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-lineGreen/20 active:scale-95 text-sm md:text-base">
+                                    <Icon name="message-circle" className="w-4 md:w-5 h-4 md:h-5" />
+                                    <span className="hidden sm:inline">LINE@洽詢</span>
+                                    <span className="sm:hidden">洽詢</span>
+                                </a>
+                                <a href="#form" className="btn-gradient text-white px-4 md:px-8 py-2 rounded-lg md:rounded-xl font-bold shadow-lg shadow-primary/20 active:scale-95 text-sm md:text-base">
+                                    評估
+                                </a>
+                            </div>
+                        </div>
+                    </nav>
+
+                    {/* Hero Section */}
+                    <header className="relative pt-40 md:pt-60 pb-20 md:pb-32 overflow-hidden bg-white px-4">
+                        <div className="absolute inset-0 hero-pattern"></div>
+                        <div className="max-w-7xl mx-auto relative z-10 text-center">
+                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] md:text-xs font-black mb-8 md:mb-10 tracking-widest uppercase">
+                                <Icon name="zap" className="w-4 h-4 fill-current" />
+                                Professional 3C Asset Recovery
+                            </div>
+                            <h1 className="text-4xl md:text-[80px] font-black text-slate-900 mb-6 md:mb-8 tracking-tighter leading-[1.2] md:leading-[1.1]">
+                                全方位 3C 資產回收<br className="md:hidden" />
+                                <span className="gradient-text-primary">專業評估系統</span>
+                            </h1>
+                            <p className="text-base md:text-2xl text-slate-500 max-w-4xl mx-auto font-medium leading-relaxed mb-10 md:mb-14 px-4">
+                                無論是企業大宗設備淘汰，或是個人閒置電腦、手機，我們皆提供軍規級數據清除服務與優於坊間的回收報價，守護您的隱私與價值。
+                            </p>
+                            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
+                                <a href="#form" className="btn-gradient w-full sm:w-auto px-8 md:px-12 py-4 md:py-5 text-white rounded-xl md:rounded-2xl font-black text-lg md:text-xl flex items-center justify-center gap-3 shadow-xl">
+                                    啟動回收評估
+                                    <Icon name="arrow-right" className="w-5 md:w-6 h-5 md:h-6" />
+                                </a>
+                                <a href="#certs" className="w-full sm:w-auto px-8 md:px-12 py-4 md:py-5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl md:rounded-2xl font-black text-lg md:text-xl transition-all">
+                                    數據抹除標準
+                                </a>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Features Section */}
+                    <section id="features" className="py-16 md:py-32 relative bg-slate-50 px-4">
+                        <div className="max-w-7xl mx-auto">
+                            <div className="text-center mb-16 md:mb-24">
+                                <h2 className="text-primary font-black tracking-[0.3em] uppercase text-xs md:text-sm mb-4">Core Competency</h2>
+                                <h3 className="text-2xl md:text-4xl font-black text-slate-900">卓越處理能力・守護數據價值</h3>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                                {[
+                                    { t: "資安隱私清除", d: "不論企業或個人，皆享有 ISO 27001 資安規範與軍規軟體抹除，徹底杜絕數據洩漏。", i: "shield-check" },
+                                    { t: "全台快速響應", d: "企業大宗到府估價，個人少量線上快速估計，最快 24 小時內完成初步報價。", i: "truck" },
+                                    { t: "ESG 永續貢獻", d: "協助閒置設備重新活化，減少電子廢棄物，個人亦可參與碳中和永續管理。", i: "leaf" },
+                                    { t: "最高價值回收", d: "透過全球銷售通路精準評價，提供明顯優於坊間二手商的資產變現報價。", i: "trending-up" }
+                                ].map((item, i) => (
+                                    <div key={i} className="bg-white p-8 md:p-10 rounded-3xl md:rounded-[2.5rem] border border-slate-100 shadow-sm transition-all duration-500 hover:-translate-y-2 card-hover group">
+                                        <div className="w-12 md:w-14 h-12 md:h-14 rounded-xl md:rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-6 md:mb-8">
+                                            <Icon name={item.i} className="w-5 md:w-6 h-5 md:h-6" />
+                                        </div>
+                                        <h4 className="text-xl md:text-2xl font-black mb-3 md:mb-4 text-slate-900 group-hover:text-primary transition-colors">{item.t}</h4>
+                                        <p className="text-sm md:text-base text-slate-500 leading-relaxed font-medium">{item.d}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Trust & Certification Section */}
+                    <section id="certs" className="py-20 md:py-40 bg-white px-4">
+                        <div className="max-w-7xl mx-auto">
+                            <div className="text-center mb-16 md:mb-24">
+                                <h2 className="text-primary font-black tracking-[0.3em] uppercase text-xs md:text-sm mb-4">Global Standards</h2>
+                                <h3 className="text-2xl md:text-4xl font-black text-slate-900 mb-6">不分規模・<span className="inline-block">同等資安級別</span></h3>
+                                <p className="text-sm md:text-lg text-slate-500 max-w-2xl mx-auto font-medium leading-relaxed">遵循全球最高規格資安抹除與處理標準，讓您的個人隱私與企業商業秘密獲得相同強度的防護。</p>
+                            </div>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10">
+                                {certs.map((cert, i) => (
+                                    <div key={i} className="text-center group">
+                                        <div className="aspect-[4/5] bg-slate-50 rounded-2xl md:rounded-[2.5rem] mb-6 md:mb-8 flex items-center justify-center p-6 md:p-10 border border-slate-100 transition-all duration-500 group-hover:border-primary/30 group-hover:bg-white group-hover:shadow-xl group-hover:shadow-primary/5">
+                                            <img src={`${cert.id}.png`} alt={cert.n} className="max-h-full max-w-full object-contain filter drop-shadow-md group-hover:scale-105 transition-transform duration-700" />
+                                        </div>
+                                        <h3 className="text-base md:text-xl font-black text-slate-900 mb-1 md:mb-2">{cert.n}</h3>
+                                        <p className="text-primary text-[9px] md:text-[11px] font-black mb-2 md:mb-4 tracking-widest uppercase">{cert.s}</p>
+                                        <div className="h-0.5 w-4 md:w-6 bg-primary/20 mx-auto mb-2 md:mb-4"></div>
+                                        <p className="text-slate-500 text-[11px] md:text-[13px] leading-relaxed font-medium px-2">{cert.d}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Report Template Section */}
+                    <section id="report" className="py-20 md:py-40 bg-slate-50 px-4">
+                        <div className="max-w-7xl mx-auto">
+                            <div className="flex flex-col lg:flex-row items-center gap-12 md:gap-20">
+                                <div className="flex-1 text-center lg:text-left">
+                                    <h2 className="text-primary font-black tracking-[0.3em] uppercase text-xs md:text-sm mb-4">Data Security Report</h2>
+                                    <h3 className="text-3xl md:text-5xl font-black text-slate-900 leading-tight mb-6 md:mb-8">
+                                        您的私密數據<br /><span className="text-primary">我們負責歸零</span>
+                                    </h3>
+                                    <p className="text-base md:text-xl text-slate-500 font-medium leading-relaxed mb-8 md:mb-10">
+                                        每台回收設備均可提供「抹除證書範本」，標註抹除時間與軟體算法，讓個人用戶不必擔心照片、文件流出，企業用戶輕鬆通過稽核。
+                                    </p>
+                                    <div className="grid grid-cols-2 gap-4 md:gap-6 text-left">
+                                        {["NIST 800-88 標準", "序號追蹤清單", "實體破壞證明", "ESG 減碳數據"].map((item, i) => (
+                                            <div key={i} className="flex items-center gap-2 md:gap-3 text-sm md:text-base text-slate-700 font-bold">
+                                                <Icon name="check-circle-2" className="w-4 md:w-5 h-4 md:h-5 text-secondary" />
+                                                {item}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="flex-1 w-full max-w-2xl relative group">
+                                    <div className="absolute -inset-4 bg-primary/10 rounded-[2rem] md:rounded-[3rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                    <div className="relative bg-white p-4 md:p-5 rounded-2xl md:rounded-[2.5rem] border border-slate-200 shadow-2xl">
+                                        <img src="cert_report_id.png" alt="抹除報告範本" className="rounded-xl md:rounded-2xl w-full border border-slate-100" />
+                                        <div className="absolute -bottom-4 md:-bottom-6 -right-4 md:-right-6">
+                                            <div className="w-14 md:w-20 h-14 md:h-20 btn-gradient text-white rounded-full shadow-2xl flex items-center justify-center">
+                                                <Icon name="file-search" className="w-6 md:w-8 h-6 md:h-8" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* CTA / Form Section */}
+                    <section id="form" className="py-20 md:py-40 relative bg-white px-4">
+                        <div className="max-w-5xl mx-auto relative z-10">
+                            <div className="flex justify-center mb-8 md:mb-10">
+                                <div className="inline-flex p-1 bg-slate-100 rounded-xl md:rounded-2xl border border-slate-200 shadow-inner overflow-x-auto">
+                                    <button 
+                                        type="button"
+                                        onClick={() => setUserType('enterprise')}
+                                        className={`whitespace-nowrap px-4 md:px-8 py-2 md:py-3 rounded-lg md:rounded-xl text-xs md:text-sm font-black transition-all ${userType === 'enterprise' ? 'tab-active' : 'text-slate-500 hover:text-slate-800'}`}
+                                    >
+                                        企業單位 / 大宗回收
+                                    </button>
+                                    <button 
+                                        type="button"
+                                        onClick={() => setUserType('individual')}
+                                        className={`whitespace-nowrap px-4 md:px-8 py-2 md:py-3 rounded-lg md:rounded-xl text-xs md:text-sm font-black transition-all ${userType === 'individual' ? 'tab-active' : 'text-slate-500 hover:text-slate-800'}`}
+                                    >
+                                        個人使用者 / 少量回收
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="bg-white rounded-3xl md:rounded-[3rem] border border-slate-200 shadow-2xl shadow-slate-200/50 overflow-hidden">
+                                {!submitted ? (
+                                    <div className="p-8 md:p-20">
+                                        <div className="text-center mb-10 md:mb-16">
+                                            <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-4 md:mb-6">{userType === 'enterprise' ? '企業回收諮詢' : '個人設備估價'}</h2>
+                                            <p className="text-sm md:text-xl text-slate-500 font-medium">我們將於 24 小時內提供初步估價分析。</p>
+                                        </div>
+                                        <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                                                {userType === 'enterprise' && (
+                                                    <div className="space-y-2">
+                                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Company Name *</label>
+                                                        <input required name="company" className="w-full px-6 py-3 md:py-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold text-slate-800 text-sm md:text-base" placeholder="公司全銜" />
+                                                    </div>
+                                                )}
+                                                <div className="space-y-2">
+                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{userType === 'enterprise' ? 'Contact Person *' : '您的姓名 *'}</label>
+                                                    <input required name="name" className="w-full px-6 py-3 md:py-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold text-slate-800 text-sm md:text-base" placeholder={userType === 'enterprise' ? '聯絡窗口姓名' : '請填寫姓名'} />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Phone *</label>
+                                                    <input required name="phone" className="w-full px-6 py-3 md:py-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold text-slate-800 text-sm md:text-base" placeholder="聯絡電話" />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email *</label>
+                                                    <input required type="email" name="email" className="w-full px-6 py-3 md:py-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold text-slate-800 text-sm md:text-base" placeholder="電子郵件" />
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Asset Details *</label>
+                                                <textarea required name="equipInfo" rows={5} className="w-full px-6 py-4 md:py-5 bg-slate-50 border border-slate-200 rounded-xl md:rounded-2xl outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold resize-none text-slate-800 text-sm md:text-base" 
+                                                    placeholder={userType === 'enterprise' ? "例：伺服器 10 台、筆電 50 台，需含抹除證書。" : "例：MacBook Pro 2021 一台、iPhone 13 一台，功能正常無破損。"}></textarea>
+                                            </div>
+                                            <button disabled={loading} type="submit" className="btn-gradient w-full py-4 md:py-6 text-white font-black text-lg md:text-2xl rounded-xl md:rounded-2xl flex items-center justify-center gap-3 md:gap-4 group disabled:opacity-50 transition-all">
+                                                {loading ? "處理中..." : "送出報價申請"}
+                                                {!loading && <Icon name="arrow-right" className="w-5 md:w-6 h-5 md:h-6 group-hover:translate-x-1 transition-transform" />}
+                                            </button>
+                                        </form>
+                                    </div>
+                                ) : (
+                                    <div className="p-16 md:p-32 text-center">
+                                        <div className="w-16 md:w-20 h-16 md:h-20 bg-secondary/10 text-secondary rounded-full flex items-center justify-center mx-auto mb-6 md:mb-8 shadow-inner">
+                                            <Icon name="check-circle" className="w-10 md:w-12 h-10 md:h-12" />
+                                        </div>
+                                        <h3 className="text-3xl md:text-5xl font-black text-slate-900 mb-4 md:mb-6 tracking-tight">評估需求已送出</h3>
+                                        <p className="text-sm md:text-xl text-slate-500 font-medium mb-8 md:mb-12">感謝您的信賴，專人將儘速與您聯繫報價。</p>
+                                        <button onClick={() => setSubmitted(false)} className="px-10 md:px-12 py-3 md:py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg md:rounded-xl font-black transition-all">重新填寫</button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Footer */}
+                    <footer className="clean-footer py-12 md:py-20 text-slate-400">
+                        <div className="max-w-7xl mx-auto px-6 text-center">
+                            <div className="flex flex-col items-center justify-center gap-6 mb-4 md:mb-8">
+                                <div className="flex items-center gap-3 md:gap-4">
+                                    <img src="Logo.png" alt="Vision Logo" className="h-8 md:h-10 w-auto" />
+                                    <div className="h-6 md:h-8 w-px bg-slate-700"></div>
+                                    <span className="text-lg md:text-2xl font-black tracking-tight text-white uppercase">Vision International</span>
+                                </div>
+                                <div className="text-[10px] md:text-[12px] font-black text-slate-500 uppercase tracking-[0.3em] md:tracking-[0.4em]">
+                                    © 2026 遠景國際 ｜ 專業資產回收與隱私防護領航者
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
