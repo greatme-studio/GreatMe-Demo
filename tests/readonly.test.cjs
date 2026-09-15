@@ -6,6 +6,16 @@ const vm = require('node:vm');
 
 const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
 
+test('public page and README use XCANDER without legacy branding or logo references', () => {
+  const readme = fs.readFileSync(path.join(__dirname, '..', 'README.md'), 'utf8');
+  for (const source of [html, readme]) {
+    assert.doesNotMatch(source, /great[\s_-]*me|遠景|vision\s+international|vision\s+logo|logo\.png/i);
+    assert.match(source, /XCANDER/);
+  }
+  assert.match(html, /<title>XCANDER｜/);
+  assert.match(html, /© 2026 XCANDER/);
+});
+
 test('demo has no submission endpoint, transport, storage, or background queue', () => {
   assert.doesNotMatch(html, /script\.google\.com|fetch\s*\(|XMLHttpRequest|sendBeacon|axios|localStorage|sessionStorage|indexedDB|WebSocket|serviceWorker|\.sync\b|setTimeout|setInterval|FormData|URLSearchParams/i);
   assert.doesNotMatch(html, /\b(?:action|formAction)\s*=|\bmethod\s*[:=]\s*["'](?:post|put|patch|delete)/i);
