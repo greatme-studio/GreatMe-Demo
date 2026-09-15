@@ -109,11 +109,8 @@
 
         const App = () => {
             const [submitted, setSubmitted] = useState(false);
-            const [loading, setLoading] = useState(false);
             const [scrolled, setScrolled] = useState(false);
             const [userType, setUserType] = useState('enterprise');
-
-            const GAS_URL = "https://script.google.com/macros/s/AKfycbxe7Qjy8JUEVR9na6NyKUyid7hwxMZ2LMgUT3WBqHY-TnUGPMt-svzdu4aaQwX7kfGXWQ/exec";
 
             useEffect(() => {
                 const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -121,28 +118,11 @@
                 return () => window.removeEventListener('scroll', handleScroll);
             }, []);
 
-            const handleSubmit = async (e) => {
+            const handleSubmit = (e) => {
                 e.preventDefault();
-                setLoading(true);
-                const form = e.currentTarget;
-                const formData = new FormData(form);
-                const searchParams = new URLSearchParams();
-                formData.forEach((value, key) => searchParams.append(key, value.toString()));
-                searchParams.append('userType', userType);
-
-                try {
-                    await fetch(GAS_URL, { 
-                        method: "POST", 
-                        mode: "no-cors", 
-                        body: searchParams 
-                    });
-                    setSubmitted(true);
-                    window.scrollTo({ top: document.getElementById('form')?.offsetTop || 0, behavior: 'smooth' });
-                } catch (error) {
-                    alert("提交失敗，請檢查網路連接。");
-                } finally {
-                    setLoading(false);
-                }
+                // Read-only demo: do not collect, persist, or transmit form values.
+                setSubmitted(true);
+                window.scrollTo({ top: document.getElementById('form')?.offsetTop || 0, behavior: 'smooth' });
             };
 
             const certs = [
@@ -319,7 +299,7 @@
                                     <div className="p-8 md:p-20">
                                         <div className="text-center mb-10 md:mb-16">
                                             <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-4 md:mb-6">{userType === 'enterprise' ? '企業回收諮詢' : '個人設備估價'}</h2>
-                                            <p className="text-sm md:text-xl text-slate-500 font-medium">我們將於 24 小時內提供初步估價分析。</p>
+                                            <p className="text-sm md:text-xl text-slate-500 font-medium">此為展示頁，資料不會送出。</p>
                                         </div>
                                         <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
@@ -347,19 +327,19 @@
                                                 <textarea required name="equipInfo" rows={5} className="w-full px-6 py-4 md:py-5 bg-slate-50 border border-slate-200 rounded-xl md:rounded-2xl outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold resize-none text-slate-800 text-sm md:text-base" 
                                                     placeholder={userType === 'enterprise' ? "例：伺服器 10 台、筆電 50 台，需含抹除證書。" : "例：MacBook Pro 2021 一台、iPhone 13 一台，功能正常無破損。"}></textarea>
                                             </div>
-                                            <button disabled={loading} type="submit" className="btn-gradient w-full py-4 md:py-6 text-white font-black text-lg md:text-2xl rounded-xl md:rounded-2xl flex items-center justify-center gap-3 md:gap-4 group disabled:opacity-50 transition-all">
-                                                {loading ? "處理中..." : "送出報價申請"}
-                                                {!loading && <Icon name="arrow-right" className="w-5 md:w-6 h-5 md:h-6 group-hover:translate-x-1 transition-transform" />}
+                                            <button type="submit" className="btn-gradient w-full py-4 md:py-6 text-white font-black text-lg md:text-2xl rounded-xl md:rounded-2xl flex items-center justify-center gap-3 md:gap-4 group disabled:opacity-50 transition-all">
+                                                送出報價申請
+                                                <Icon name="arrow-right" className="w-5 md:w-6 h-5 md:h-6 group-hover:translate-x-1 transition-transform" />
                                             </button>
                                         </form>
                                     </div>
                                 ) : (
-                                    <div className="p-16 md:p-32 text-center">
+                                    <div role="status" aria-live="polite" className="p-16 md:p-32 text-center">
                                         <div className="w-16 md:w-20 h-16 md:h-20 bg-secondary/10 text-secondary rounded-full flex items-center justify-center mx-auto mb-6 md:mb-8 shadow-inner">
                                             <Icon name="check-circle" className="w-10 md:w-12 h-10 md:h-12" />
                                         </div>
-                                        <h3 className="text-3xl md:text-5xl font-black text-slate-900 mb-4 md:mb-6 tracking-tight">評估需求已送出</h3>
-                                        <p className="text-sm md:text-xl text-slate-500 font-medium mb-8 md:mb-12">感謝您的信賴，專人將儘速與您聯繫報價。</p>
+                                        <h3 className="text-3xl md:text-5xl font-black text-slate-900 mb-4 md:mb-6 tracking-tight">展示操作完成</h3>
+                                        <p className="text-sm md:text-xl text-slate-500 font-medium mb-8 md:mb-12">此為展示頁，資料不會送出。</p>
                                         <button onClick={() => setSubmitted(false)} className="px-10 md:px-12 py-3 md:py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg md:rounded-xl font-black transition-all">重新填寫</button>
                                     </div>
                                 )}
