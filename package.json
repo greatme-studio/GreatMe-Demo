@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "name": "xcander-homepage-r5",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "node build-production.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
