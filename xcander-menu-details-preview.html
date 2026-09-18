@@ -312,6 +312,39 @@ a:focus-visible, button:focus-visible { outline: 2px solid #fff; outline-offset:
   .menu-detail-card.is-guided>.menu-detail-summary,
   .menu-detail-card.is-guided .menu-detail-chevron
 }
+
+/* XCANDER final Hamburger polish preview */
+.site-menu [data-menu-contact] .contact-list{border-top:0}
+.site-menu [data-menu-contact]{margin-top:18px}
+.site-menu .menu-detail-list>.menu-detail-link{
+  width:100%;margin:0;padding:18px 0;display:grid;
+  grid-template-columns:20px minmax(0,1fr) 24px;align-items:center;gap:24px;
+  border:0;border-bottom:1px solid #222;color:#f4f4f4;background:transparent;
+  font-size:inherit;font-weight:400;letter-spacing:normal
+}
+.site-menu .menu-detail-list>.menu-detail-link>.menu-detail-number{
+  align-self:start;margin-top:9px;width:auto;color:#777;font-size:13px;font-weight:400;letter-spacing:.05em
+}
+.site-menu .menu-detail-list>.menu-detail-link>.menu-detail-heading{display:block;min-width:0}
+.site-menu .menu-detail-list>.menu-detail-link>.menu-detail-heading strong{
+  display:block;font-size:clamp(22px,3vw,42px);line-height:1.08;font-weight:600;letter-spacing:-.03em
+}
+.site-menu .menu-detail-list>.menu-detail-link>.menu-detail-heading small{
+  display:block;margin:6px 0 0;color:#aaa;font-size:14px;line-height:1.5;font-weight:400;letter-spacing:.05em
+}
+.site-menu .menu-detail-list>.menu-detail-link>.menu-detail-link-chevron{
+  width:20px;height:20px;color:#aaa;transition:transform .25s cubic-bezier(.2,.65,.3,1),color .2s ease
+}
+.site-menu .menu-detail-list>.menu-detail-link:is(:hover,:focus-visible)>.menu-detail-link-chevron{
+  transform:translateX(3px);color:#fff
+}
+@media(max-width:700px){
+  .site-menu .menu-detail-list>.menu-detail-link{
+    grid-template-columns:20px minmax(0,1fr) 22px;gap:13px;padding-block:18px
+  }
+  .site-menu .menu-detail-list>.menu-detail-link>.menu-detail-heading strong{font-size:clamp(21px,6vw,30px)}
+  .site-menu .menu-detail-list>.menu-detail-link>.menu-detail-heading small{font-size:13px}
+}
 </style></head>
 <body>
   <a class="skip-link" href="#main-content">跳至主要內容</a>
@@ -359,12 +392,12 @@ a:focus-visible, button:focus-visible { outline: 2px solid #fff; outline-offset:
             <div class="menu-detail-point"><h3>社群與聯絡入口整合</h3><p>依品牌需求，整合 LINE、Instagram 等社群連結，讓客戶輕鬆瀏覽、追蹤與詢問。</p></div>
           </div>
         </details>
-      </div>
-      <a class="menu-detail-link" href="#showcase" data-menu-showcase>
+        <a class="menu-detail-link" href="#showcase" data-menu-showcase>
           <span class="menu-detail-number">04</span>
           <span class="menu-detail-heading"><strong>Showcase</strong><small>品牌展示網站</small></span>
           <svg class="chevron-icon menu-detail-link-chevron" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 5L15 12L8 19" /></svg>
         </a>
+      </div>
       <section class="contact-methods" aria-label="聯絡方式" data-contact-methods data-menu-contact id="menu-contact">
         <div class="contact-list">
           <a class="contact-row" href="https://line.me/R/ti/p/%40274hnuvi" target="_blank" rel="noopener noreferrer" aria-label="開啟 XCANDER LINE 官方帳號 @274hnuvi（另開分頁）">
@@ -469,7 +502,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid #fff; outline-offset:
           <span class="contact-details"><span class="contact-name"><strong>Email</strong> 聯絡信箱</span><span class="contact-address">hello@xcander.com</span></span>
           <span class="contact-action"><span>複製信箱</span><svg class="chevron-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 5L15 12L8 19" /></svg></span>
         </button>
-      <a class="contact-row" href="#showcase" data-showcase-return aria-label="瀏覽目前公開的品牌展示網站"><span class="contact-details"><span class="contact-name"><strong>Showcase</strong> 品牌展示</span><span class="contact-address">目前公開的品牌展示網站</span></span><span class="contact-action"><span>瀏覽案例</span><svg class="chevron-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 5L15 12L8 19" /></svg></span></a></div>
+      </div>
       <p class="contact-alternative"><a class="mail-app-link" href="mailto:hello@xcander.com?subject=XCANDER%20%E8%81%8A%E8%81%8A%E6%88%91%E7%9A%84%E4%B8%8B%E4%B8%80%E6%AD%A5" data-contact-email>開啟郵件程式</a></p>
       <p class="contact-status" data-contact-status role="status" aria-live="polite" aria-atomic="true"></p>
       <div class="manual-email" data-manual-email hidden>
@@ -478,7 +511,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid #fff; outline-offset:
       </div>
     </section>
   </dialog>
-<script id="xcander-showcase-runtime">(()=>{const dialog=document.querySelector('#contact');const apply=()=>{const i=dialog?.querySelector('[data-contact-intro]');const b=dialog?.querySelector('.dialog-body');if(i)i.textContent='聊聊你的需求，看看適合你的展示網站。';if(b)b.innerHTML='<p class="dialog-body-lead">告訴我們你的品牌、提供的服務，以及現在最想解決的一件事。我們一起整理下一步，找到適合你的網站風格與數位體驗。</p><p class="dialog-body-encourage">讓我們一起，讓你的品牌被更好地看見。</p><p class="dialog-contact-cue">選擇下方聯絡方式 <svg class="chevron-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 5L15 12L8 19" /></svg></p>'};document.addEventListener('click',e=>{if(e.target?.closest?.('[data-contact]'))queueMicrotask(apply)},true);document.querySelector('[data-showcase-return]')?.addEventListener('click',e=>{e.preventDefault();if(dialog?.open)dialog.close();requestAnimationFrame(()=>document.querySelector('#showcase')?.scrollIntoView({behavior:'smooth',block:'start'}))});})();</script><script>(() => {
+<script id="xcander-showcase-runtime">(()=>{const dialog=document.querySelector('#contact');const apply=()=>{const i=dialog?.querySelector('[data-contact-intro]');const b=dialog?.querySelector('.dialog-body');if(i)i.textContent='聊聊你的需求，看看適合你的展示網站。';if(b)b.innerHTML='<p class="dialog-body-lead">告訴我們你的品牌、提供的服務，以及現在最想解決的一件事。我們一起整理下一步，找到適合你的網站風格與數位體驗。</p><p class="dialog-body-encourage">讓我們一起，讓你的品牌被更好地看見。</p><p class="dialog-contact-cue">選擇下方聯絡方式 <svg class="chevron-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 5L15 12L8 19" /></svg></p>'};document.addEventListener('click',e=>{if(e.target?.closest?.('[data-contact]'))queueMicrotask(apply)},true);)});})();</script><script>(() => {
   const toggle = document.querySelector('[data-menu-toggle]');
   const menu = document.querySelector('[data-menu]');
   const dialog = document.querySelector('#contact');
