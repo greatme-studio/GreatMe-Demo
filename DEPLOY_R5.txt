@@ -1,0 +1,3 @@
+XCANDER R5 production candidate trigger
+Authority: b0286c79ae684a46a1dab29e148ae6d468d6a8d5
+Triggered after Vercel Git connection on 2026-09-19.
