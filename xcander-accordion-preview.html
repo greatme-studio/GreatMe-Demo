@@ -280,33 +280,9 @@ a:focus-visible, button:focus-visible { outline: 2px solid #fff; outline-offset:
   .service-accordion-panel{padding-right:24px;padding-bottom:12px}
 }
 
-/* XCANDER accordion layout-stability pass */
-.service-accordion{
-  position:relative;
-  overflow-anchor:none;
-}
-.service-accordion.has-open{
-  min-height:calc(var(--accordion-collapsed-height, 0px) + var(--accordion-max-panel-height, 0px));
-}
-.service-accordion-measure{
-  position:absolute!important;
-  visibility:hidden!important;
-  display:block!important;
-  height:auto!important;
-  max-height:none!important;
-  pointer-events:none!important;
-  z-index:-1!important;
-}
-.service-accordion-item[open] .service-accordion-panel{
-  animation:xcanderAccordionPanelIn .18s ease-out;
-}
-@keyframes xcanderAccordionPanelIn{
-  from{opacity:0}
-  to{opacity:1}
-}
-@media(prefers-reduced-motion:reduce){
-  .service-accordion-item[open] .service-accordion-panel{animation:none}
-}
+/* XCANDER independent disclosure + stable visual anchors */
+.service-accordion{overflow-anchor:none}
+.service-accordion-item[open]>.service-accordion-panel{display:block}
 </style></head>
 <body>
   <a class="skip-link" href="#main-content">跳至主要內容</a>
@@ -575,63 +551,37 @@ a:focus-visible, button:focus-visible { outline: 2px solid #fff; outline-offset:
   }
 
 document.querySelectorAll('[data-service-accordion]').forEach(group=>{
-  const items=[...group.querySelectorAll('details.service-accordion-item')];
-  const summaries=items.map(item=>item.querySelector('summary'));
-  let resizeFrame=0;
-
-  const measure=()=>{
-    const gap=parseFloat(getComputedStyle(group).rowGap||getComputedStyle(group).gap)||0;
-    const collapsed=summaries.reduce((sum,summary)=>sum+summary.getBoundingClientRect().height,0)+Math.max(0,summaries.length-1)*gap;
-    let maxPanel=0;
-
-    items.forEach(item=>{
-      const panel=item.querySelector('.service-accordion-panel');
-      const summary=item.querySelector('summary');
-      if(!panel||!summary)return;
-      const probe=panel.cloneNode(true);
-      probe.classList.add('service-accordion-measure');
-      probe.style.width=Math.max(0,summary.getBoundingClientRect().width)+'px';
-      probe.style.left=(summary.offsetLeft||0)+'px';
-      probe.style.top='0';
-      group.appendChild(probe);
-      maxPanel=Math.max(maxPanel,probe.getBoundingClientRect().height);
-      probe.remove();
-    });
-
-    group.style.setProperty('--accordion-collapsed-height',Math.ceil(collapsed)+'px');
-    group.style.setProperty('--accordion-max-panel-height',Math.ceil(maxPanel)+'px');
-    group.classList.toggle('has-open',items.some(item=>item.open));
-  };
-
-  const scheduleMeasure=()=>{
-    cancelAnimationFrame(resizeFrame);
-    resizeFrame=requestAnimationFrame(measure);
-  };
-
-  summaries.forEach(summary=>{
-    summary.addEventListener('click',()=>{
-      const anchorTop=summary.getBoundingClientRect().top;
-      requestAnimationFrame(()=>requestAnimationFrame(()=>{
-        const delta=summary.getBoundingClientRect().top-anchorTop;
-        if(Math.abs(delta)>.5)window.scrollBy({top:delta,left:0,behavior:'auto'});
-      }));
-    });
+  group.querySelectorAll('details.service-accordion-item').forEach(item=>{
+    item.addEventListener('toggle',()=>{});
   });
-
-  items.forEach(item=>{
-    item.addEventListener('toggle',()=>{
-      if(item.open){
-        items.forEach(other=>{if(other!==item&&other.open)other.open=false});
-      }
-      group.classList.toggle('has-open',items.some(entry=>entry.open));
-    });
-  });
-
-  new MutationObserver(scheduleMeasure).observe(group,{subtree:true,childList:true,characterData:true});
-  window.addEventListener('resize',scheduleMeasure,{passive:true});
-  if(document.fonts?.ready)document.fonts.ready.then(scheduleMeasure);
-  measure();
 });
+
+const lockAccordionVisualAnchors=()=>{
+  ['#philosophy','#growth'].forEach(selector=>{
+    const section=document.querySelector(selector);
+    if(!section)return;
+    const sectionRect=section.getBoundingClientRect();
+
+    const artwork=section.querySelector(':scope > .artwork');
+    if(artwork&&!artwork.dataset.xcanderAnchorLocked){
+      const rect=artwork.getBoundingClientRect();
+      artwork.style.top=(rect.top-sectionRect.top)+'px';
+      artwork.style.bottom='auto';
+      artwork.dataset.xcanderAnchorLocked='true';
+    }
+
+    const note=section.querySelector(':scope > .visual-note');
+    if(note&&!note.dataset.xcanderAnchorLocked){
+      const rect=note.getBoundingClientRect();
+      note.style.top=(rect.top-sectionRect.top)+'px';
+      note.style.bottom='auto';
+      note.dataset.xcanderAnchorLocked='true';
+    }
+  });
+};
+
+requestAnimationFrame(()=>requestAnimationFrame(lockAccordionVisualAnchors));
+if(document.fonts?.ready)document.fonts.ready.then(()=>requestAnimationFrame(lockAccordionVisualAnchors));
 
 })();
 </script></body>
