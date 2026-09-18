@@ -18,7 +18,7 @@ const files = [
 ];
 
 await mkdir("dist", { recursive: true });
-await copyFile("index.html", "dist/index.html");
+await copyFile("index.html", "dist/index.html");\nawait copyFile("robots.txt", "dist/robots.txt");\nawait copyFile("sitemap.xml", "dist/sitemap.xml");
 
 for (const [path, expectedMd5] of files) {
   const response = await fetch(`${sourceOrigin}/${path}?r5-build=20260919`, {
