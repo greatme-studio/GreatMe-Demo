@@ -1,0 +1,46 @@
+name: XCANDER Homepage V2 Showcase card QA
+on:
+  push:
+    branches: [assistant/xcander-homepage-v2-showcase-20261012]
+    paths:
+      - 'index.html'
+      - 'build-production.mjs'
+      - '.github/workflows/xcander-homepage-v2-card-qa.yml'
+permissions:
+  contents: read
+jobs:
+  one-showcase:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify homepage has one V2 Showcase, no A/C/E/G entries
+        run: |
+          node --input-type=module -e '
+          import fs from "node:fs";
+          import assert from "node:assert/strict";
+          const src=fs.readFileSync("index.html","utf8");
+          const showcase=src.split("<section id=\"showcase\"")[1]?.split("</section>")[0];
+          assert(showcase);
+          assert.equal((showcase.match(/class=\"showcase-card\"/g)||[]).length,1);
+          assert.match(showcase,/初白 CHU BAI/);
+          assert.match(showcase,/https:\/\/xcander-v2-showcase.vercel.app\//);
+          assert.doesNotMatch(showcase,/showcase.xcander.com\/[aceg]/);
+          '
+      - run: npm run build
+      - name: Check original homepage SEO/CTA retained
+        run: |
+          node --input-type=module -e '
+          import fs from "node:fs";
+          import assert from "node:assert/strict";
+          const page=fs.readFileSync("dist/index.html","utf8");
+          assert.match(page,/<title>XCANDER/);
+          assert.match(page,/id=\"contact\"/);
+          assert.match(page,/id=\"showcase\"/);
+          assert(!/https:\/\/showcase.xcander.com\/[aceg]/.test(page));
+          '
